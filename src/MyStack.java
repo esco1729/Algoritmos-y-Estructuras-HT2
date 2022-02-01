@@ -40,8 +40,13 @@ public class MyStack implements Stack{
      */
     @Override
     public Object peek() {
-        int index = Array.size()-1;
-        return Array.get(index);
+        try{
+            int index = Array.size()-1;
+            return Array.get(index);
+        }catch (Exception e){
+            String message = "";
+            return message;
+        }
     }
 
     /**
