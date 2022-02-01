@@ -3,18 +3,19 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-
+import java.util.Collections;
 
 
 public class Controlador {
     public void ProgramLogic() {
         ArrayList<Object> Array = new ArrayList<>();
-
+        ArrayList<Object> caracters = new ArrayList<>();
+        ArrayList<Object> Arithmetic_Commands = new ArrayList<>();
 
         System.out.println("Hola, bienvenido a tu calculadora");
         File file = new File("datos.txt");
 
-        //intentara buscar el archivo, por defecto existira un archivo con el nombre que se necesita.
+        //Program tries to find de file. For default the file is already created and called datos.txt.
         try{
             FileReader data = new FileReader(file);
             int i = 0;
@@ -26,32 +27,81 @@ public class Controlador {
                 Array.add(command);
             }
             data.close();
-            //los datos y caracteres en el documento txt han sido agregados a un arreglo, de no haber el programa se terminara
+            Collections.reverse(Array);
+
+            //if the document contains any characters, the program will continue, otherwise it will end
+
             if(Array.isEmpty()){
                 System.out.println("Tu Archivo .txt no tiene algun caracter, no se podra calcular nada. Editalo y corre nuevamente este programa");
                 System.exit(0);
             }
-            //si el archivo si tiene algun caracter con el cual trabajar...
+
             else{
-                //se crean dos arreglos y Stacks para poder manipularlos
-                ArrayList<Object> caracters = new ArrayList<>();
-                ArrayList<Object> Arithmetic_Commands = new ArrayList<>();
+                //The stacks are created from the interface the class and the interface created before
                 MyStack num_stack = new MyStack(caracters);
                 MyStack commands_stack = new MyStack(Arithmetic_Commands);
 
-                //se revisa el arreglo original, si es un operando se agrega al arreglo de comandos aritmeticos, de lo contrario se agrega a caracters
-                for(Object a : Array){
-                    if(a.getClass().getSimpleName() == "Integer" || a.getClass().getSimpleName() == "Double"){
-                        String a_to_String = (String)a;
-                        double number = Double.parseDouble(a_to_String);
-                        num_stack.add(number);
-                    }//si el dato no se puede tratar como un numero de alguna forma
-                    else{
-                        commands_stack.add(a);
+                //the values in the Array are reviewed
+                for(int n = 0;n<Array.size();n++) {
+                    String elemento = String.valueOf(Array.get(n));
+                    //if a value matches an arithmetic sign, it pushes to the commands stack
+                    if (elemento.equals("+") || elemento.equals("-") || elemento.equals("*") || elemento.equals("/")) {
+                        commands_stack.add(Array.get(n));
                     }
-                    }//fin ciclo
-                }//fin condicional
-            //Para este momento ya se han separado los numeros de los comandos aritmeticos, ahora es momento de operarlos en formato PostFix
+                    //if a value is null, it does nothing
+                    if (elemento == null) {
+                        elemento = null;
+                    }
+                    //if a value is a number (I am not considering other cases) it will be pushed to the num_stack
+                    else {
+                        num_stack.add(Array.get(n));
+                    }
+                }
+                //Elements had been added up to each stack
+
+                String math_operator = String.valueOf(commands_stack.remove());
+
+                String ConstantA = String.valueOf(num_stack.remove());
+                String ConstantB = String.valueOf(num_stack.remove());
+
+                double A = Double.parseDouble(ConstantA);
+                double B = Double.parseDouble(ConstantB);
+
+                double result;
+                if(math_operator.equals("+")){
+                    result = A+B;
+                    num_stack.add(result);
+                }
+                else{
+                    //if not a sum, program checks if it is a take away
+                    if(math_operator.equals("-")){
+                        result = A-B;
+                        num_stack.add(result);
+                    }
+                    else{
+                        //if not a sum or a take away, program checks if it is a multiplication
+                        if(math_operator.equals("*")){
+                            result = A*B;
+                            num_stack.add(result);
+                        }
+                        else{
+                            //if not a sum, take away or multiplication, program checks if it is a division
+                            if(math_operator.equals("/")){
+                                result = A/B;
+                                num_stack.add(result);
+                            }else{
+                                //if not any of the above
+                                if(math_operator.equals("+") || math_operator.equals("-") || math_operator.equals("*") || math_operator.equals("/")){
+                                    System.out.println("Operador aritmetico invalido");
+                                }
+                            }//not any arithmetic operator
+                        }//not a multiplication
+                    }//not a take away
+                }//not a sum
+                System.out.println(num_stack.peek());
+
+
+            }//if Array is not empty
 
 
 
