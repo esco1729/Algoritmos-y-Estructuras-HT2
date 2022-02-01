@@ -1,3 +1,9 @@
+/**
+ *  @author Pablo Herrera
+ *  @since January 20th, 2022
+ *  @Version 1.0
+ *  Implements the stack interface to treat an Array as an stack. It contains generic values
+ */
 import java.util.ArrayList;
 
 public class MyStack implements Stack{
