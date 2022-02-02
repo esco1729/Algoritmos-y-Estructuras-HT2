@@ -1,3 +1,5 @@
+package src;
+
 /**
  * Defines all the methods that a Calculator should have
  */

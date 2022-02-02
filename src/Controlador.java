@@ -1,4 +1,9 @@
+package src;
+
 import javax.swing.*;
+
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -7,15 +12,23 @@ import java.util.Collections;
 
 
 public class Controlador {
+	
+	MyStack num_stack = null;
+    MyStack commands_stack = null;
+    double FinalResult;
+    
+    
     public void ProgramLogic() {
         ArrayList<Object> Array = new ArrayList<>();
         ArrayList<Object> caracters = new ArrayList<>();
         ArrayList<Object> Arithmetic_Commands = new ArrayList<>();
-        double FinalResult;
+        
 
         System.out.println("Hola, bienvenido a tu calculadora");
         File file = new File("datos.txt");
-
+        
+        
+        
         //Program tries to find de file. For default the file is already created and called datos.txt.
         try{
             FileReader data = new FileReader(file);
@@ -40,8 +53,8 @@ public class Controlador {
             else{
 
                 //The stacks are created from the interface the class and the interface created before
-                MyStack num_stack = new MyStack(caracters);
-                MyStack commands_stack = new MyStack(Arithmetic_Commands);
+                num_stack = new MyStack(caracters);
+                commands_stack = new MyStack(Arithmetic_Commands);
 
                 //the values in the Array are reviewed
                 for(int n = 0;n<Array.size();n++) {
@@ -60,10 +73,13 @@ public class Controlador {
                         }
                     }
                 }
+                
+                
                 //Elements had been added up to each stack
                 boolean loop = true;
+                
                 do{
-                    System.out.println("Resultado actual de la calculadora..." +num_stack.peek());
+                    System.out.println("Resultado actual de la calculadora..." + num_stack.peek());
 
                     String ConstantA = String.valueOf(num_stack.remove());
                     String ConstantB = String.valueOf(num_stack.remove());
@@ -79,43 +95,56 @@ public class Controlador {
                         A=0;
                         B=0;
                     }
+                    
+                    
                     double result;
 
                     String math_operator = String.valueOf(commands_stack.remove());
-
-                    if(math_operator.equals("+")){
-                        result = A+B;
-                        FinalResult = result;
-                        num_stack.add(result);
-                    }
-                    else{
-                        //if not a sum, program checks if it is a take away
-                        if(math_operator.equals("-")){
-                            result = A-B;
-                            FinalResult = result;
-                            num_stack.add(result);
-                        }
-                        else{
-                            //if not a sum or a take away, program checks if it is a multiplication
-                            if(math_operator.equals("*")){
-                                result = A*B;
-                                FinalResult = result;
-                                num_stack.add(result);
-                            }
-                            else{
-                                //if not a sum, take away or multiplication, program checks if it is a division
-                                if(math_operator.equals("/")){
-                                    result = A/B;
-                                    FinalResult = result;
-                                    num_stack.add(result);
-                                }else{
-                                    if(math_operator.equals("+") && !math_operator.equals("-") && !math_operator.equals("*") && !math_operator.equals("+")){
-                                        System.out.println("Operador invalido, intente agregar un + al final del documento o bien revise e intente de nuevo");
-                                    }
-                                }//not any arithmetic operator
-                            }//not a multiplication
-                        }//not a take away
-                    }//not a sum
+                    
+                    result = operaciones(math_operator, A, B);
+                    FinalResult = result;
+            		num_stack.add(result);
+                    
+                   
+                   /* switch (math_operator) {
+					case "+":
+						result = A+B;
+						FinalResult = result;
+						num_stack.add(result);
+						break;
+					default:
+						
+						switch (math_operator) {
+						case "-":
+							result = A-B;
+							FinalResult = result;
+							num_stack.add(result);
+							break;
+						default:
+							switch (math_operator) {
+							case "*":
+								result = A*B;
+								FinalResult = result;
+								num_stack.add(result);
+								break;
+							default:
+								switch (math_operator) {
+								case "/":
+									result = A/B;
+									FinalResult = result;
+									num_stack.add(result);
+									break;
+								default:
+									if(math_operator.equals("+") && !math_operator.equals("-") && !math_operator.equals("*") && !math_operator.equals("+"))
+										System.out.println("Operador invalido, intente agregar un + al final del documento o bien revise e intente de nuevo");
+									break;
+								}
+								break;
+							}
+							break;
+						}
+						break;
+					}*/
                 }while(loop);
                 System.out.println("Ha finalizado la ejecucion");
             }//if Array is not empty
@@ -123,6 +152,49 @@ public class Controlador {
         catch(IOException e){
             JOptionPane.showMessageDialog(null,"No existe un archivo llamado datos.txt dentro de la carpeta, agregue uno para poder ejecutar este programa");
             System.exit(0);
-        }
+        }      
     }
-}
+    
+    public double operaciones(String math_operator, double A, double B) {
+    	double result = 0;
+    	
+    	switch(math_operator) {
+    		case "+":
+    			result = operacionSuma(A, B);
+    			break;
+    		case "-":
+    			result = operacionResta(A,B);
+    			break;
+    		case "*":
+    			result = operacionMulti(A,B);
+    			break;
+    		case "/":
+    			result = operacionResta(A,B);
+    			break;
+    		default:
+    			if(math_operator.equals("+") && !math_operator.equals("-") && !math_operator.equals("*") && !math_operator.equals("+"))
+					System.out.println("Operador invalido, intente agregar un + al final del documento o bien revise e intente de nuevo");
+    			break;
+    	
+    	}
+    	return result;
+    }
+    
+    public double operacionSuma(double A, double B) {
+			return A+B;
+     }
+    
+    public double operacionResta(double A, double B) {
+    	return A-B;
+    
+    }
+    
+    public double operacionMulti(double A, double B) {
+    	return A*B;
+    }
+    
+    public double operacionDivision(double A, double B) {
+    	return A/B;
+    
+    }
+} 

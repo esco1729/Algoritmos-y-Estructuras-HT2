@@ -1,3 +1,5 @@
+package src;
+
 /**
  * Defines all the methods that a Stack should have.
  * @param <E> Type of the items stored on the Stack. Example: String

@@ -1,9 +1,11 @@
+package src;
+
 import java.util.ArrayList;
 
-public class MyStack implements Stack{
-    private ArrayList Array;
+public class MyStack implements Stack<Object>{
+    private ArrayList<Object> Array;
 
-    MyStack(ArrayList array){
+    MyStack(ArrayList<Object> array){
         this.Array = array;
     }
 
